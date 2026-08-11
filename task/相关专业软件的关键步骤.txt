@@ -1,0 +1,5 @@
+1.运行helm.exe lint检查Chart和values.schema.json
+2.分别加载四个阶段values执行helm.exe template
+3.确认输出中不存在kind为Secret的对象
+4.核对Deployment的projected sources与轮换台账
+5.运行两个错误values并确认渲染失败

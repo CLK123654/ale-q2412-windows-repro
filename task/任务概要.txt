@@ -1,0 +1,1 @@
+回调验签服务需要在四个阶段切换外部托管的HMACSecret。Chart只保存Secret名称和键，不生成Secret对象，也不接触密钥正文。

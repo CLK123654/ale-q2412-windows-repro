@@ -1,0 +1,7 @@
+总分100分。
+
+1.四阶段顺序、activeKey和acceptedKeys正确（25分）
+2.Deployment投影的Secret名称和键路径正确（25分）
+3.Chart不生成Secret对象且输入不含密钥正文（20分）
+4.ConfigMap与Pod注解的阶段修订号一致（15分）
+5.两个无效阶段在无清单输出时失败（15分）

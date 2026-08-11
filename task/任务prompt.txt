@@ -1,0 +1,1 @@
+输入包提供两个外部Secret名称和steady、preload、activate、retire四阶段计划。请修订HelmChart，使Deployment按acceptedKeys投影相应Secret，并用activeKey和rotationRevision标记当前阶段。Chart不得创建Secret对象。无效的activeKey或未知引用必须在清单输出前失败。交付四份渲染清单、轮换台账和错误样例。

@@ -1,0 +1,36 @@
+name: q2412-windows-repro
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: windows-2025
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.18.4
+      - name: Verify four attachments and two clean directories
+        shell: pwsh
+        run: python ./qa/verify_attachments.py
+      - name: Execute primary software smoke
+        if: ${{ always() }}
+        shell: pwsh
+        run: ./qa/software_smoke.ps1
+      - name: Upload independent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q2412-windows-evidence
+          path: evidence/**
+          if-no-files-found: error

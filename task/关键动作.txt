@@ -1,0 +1,5 @@
+从key_inventory.csv建立key_id到Secret名称的映射
+按phase_plan.csv核对activeKey和acceptedKeys
+使用projected volume引用每阶段所需Secret
+在ConfigMap和Pod注解中写入阶段修订号
+渲染四个有效阶段并检查两个失败关闭样例

@@ -1,0 +1,11 @@
+{
+  "题目ID": "2412",
+  "任务名称": "回调验签服务Chart的外部Secret轮换",
+  "任务概要": "回调验签服务需要在四个阶段切换外部托管的HMACSecret。Chart只保存Secret名称和键，不生成Secret对象，也不接触密钥正文。",
+  "任务prompt‼️": "输入包提供两个外部Secret名称和steady、preload、activate、retire四阶段计划。请修订HelmChart，使Deployment按acceptedKeys投影相应Secret，并用activeKey和rotationRevision标记当前阶段。Chart不得创建Secret对象。无效的activeKey或未知引用必须在清单输出前失败。交付四份渲染清单、轮换台账和错误样例。",
+  "关键动作": "从key_inventory.csv建立key_id到Secret名称的映射\n按phase_plan.csv核对activeKey和acceptedKeys\n使用projected volume引用每阶段所需Secret\n在ConfigMap和Pod注解中写入阶段修订号\n渲染四个有效阶段并检查两个失败关闭样例",
+  "评分表（直接输入内容或使用txt文档）‼️": "总分100分。\n\n1.四阶段顺序、activeKey和acceptedKeys正确（25分）\n2.Deployment投影的Secret名称和键路径正确（25分）\n3.Chart不生成Secret对象且输入不含密钥正文（20分）\n4.ConfigMap与Pod注解的阶段修订号一致（15分）\n5.两个无效阶段在无清单输出时失败（15分）",
+  "本项任务的环境依赖": "主软件为Helm3.18.4，使用Windows11原生PowerShell运行helm.exe，无需WSL2。\n\n安装阶段可以联网取得主软件和锁定依赖，正式复现只读取题目输入并使用本机回环连接。辅助工具为PowerShell、Git和文本编辑器；公开仓库不包含凭据，许可按各软件原许可执行。\n\n建议准备2核CPU、4GB内存和2GB可用磁盘。权限限制为输入目录只读，程序只能写入指定工作目录；单次执行超时为15分钟，人工完成预计4至8小时。\n\n主要风险是把active切换和accepted集合收缩放在同一阶段，导致旧签名窗口提前关闭；",
+  "相关专业软件的关键步骤": "1.运行helm.exe lint检查Chart和values.schema.json\n2.分别加载四个阶段values执行helm.exe template\n3.确认输出中不存在kind为Secret的对象\n4.核对Deployment的projected sources与轮换台账\n5.运行两个错误values并确认渲染失败",
+  "涉及的专业软件": "Helm"
+}
