@@ -39,9 +39,16 @@ def main():
  activate=(positive/'output/rendered/activate.yaml').read_text(encoding='utf-8')
  if 'name: callback-keyring-g18-next' not in activate:raise AssertionError('Secret registry change did not reach projection')
  (EVIDENCE/'positive-case.json').write_text(json.dumps({'input_field':'g18.secret_name','before':'callback-keyring-g18','after':'callback-keyring-g18-next','behavior_changed':True},indent=2)+'\n',encoding='utf-8')
- negative=RUN/'negative';extract(TASK/'reference.zip',negative); chart=negative/'output/chart'; bad=negative/'bad-values.yaml';bad.write_text('phase: bad\nrotationRevision: KEYRING-BAD\nactiveKey: g18\nacceptedKeys: [g17]\n',encoding='utf-8')
- process=subprocess.run([helm,'template','callback',str(chart),'--namespace','callback-system','--values',str(bad)],text=True,capture_output=True,timeout=60)
- if process.returncode==0 or process.stdout.strip() or 'must appear in acceptedKeys' not in process.stderr:raise AssertionError('invalid activeKey was not closed by Chart')
- (EVIDENCE/'negative-case.log').write_text(f'return_code={process.returncode}\nstdout={process.stdout}\nstderr={process.stderr}',encoding='utf-8')
- (EVIDENCE/'windows-summary.json').write_text(json.dumps({'result':'PASS','commit_sha':os.getenv('GITHUB_SHA'),'workflow_run_id':os.getenv('GITHUB_RUN_ID'),'runner_image':os.getenv('ImageOS'),'main_software':{'name':'Helm','version':version.stdout.strip(),'executed':True},'clean_directory_count':2,'process_runs_per_directory':2,'clean_runs':clean,'positive_mutation':'PASS','negative_case':'PASS','reference_full_tree_match':True,'formal_network':{'helm_outbound_blocked':True,'python_outbound_blocked':True,'external_services_used':False}},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ negative=RUN/'negative';extract(TASK/'reference.zip',negative); chart=negative/'output/chart'; negative_results=[]
+ negative_cases=[
+  ('active-key-missing','phase: bad\nrotationRevision: KEYRING-BAD\nactiveKey: g18\nacceptedKeys: [g17]\n','must appear in acceptedKeys'),
+  ('unregistered-key','phase: bad\nrotationRevision: KEYRING-BAD\nactiveKey: g17\nacceptedKeys: [g17, g99]\n','missing from secretRefs'),
+ ]
+ for name,values,error_fragment in negative_cases:
+  bad=negative/f'{name}-values.yaml';bad.write_text(values,encoding='utf-8')
+  process=subprocess.run([helm,'template','callback',str(chart),'--namespace','callback-system','--values',str(bad)],text=True,capture_output=True,timeout=60)
+  if process.returncode==0 or process.stdout.strip() or error_fragment not in process.stderr:raise AssertionError(f'{name} was not closed by Chart')
+  (EVIDENCE/f'negative-{name}.log').write_text(f'return_code={process.returncode}\nstdout={process.stdout}\nstderr={process.stderr}',encoding='utf-8')
+  negative_results.append({'case':name,'return_code':process.returncode,'stdout_empty':True,'error_located':True})
+ (EVIDENCE/'windows-summary.json').write_text(json.dumps({'result':'PASS','commit_sha':os.getenv('GITHUB_SHA'),'workflow_run_id':os.getenv('GITHUB_RUN_ID'),'runner_image':os.getenv('ImageOS'),'main_software':{'name':'Helm','version':version.stdout.strip(),'executed':True},'clean_directory_count':2,'process_runs_per_directory':2,'clean_runs':clean,'positive_mutation':'PASS','negative_cases':negative_results,'reference_full_tree_match':True,'formal_network':{'helm_outbound_blocked':True,'python_outbound_blocked':True,'external_services_used':False}},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 if __name__=='__main__':main()
