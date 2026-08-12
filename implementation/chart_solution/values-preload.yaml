@@ -1,0 +1,4 @@
+phase: preload
+rotationRevision: KEYRING-18-PRELOAD
+activeKey: g17
+acceptedKeys: [g17, g18]

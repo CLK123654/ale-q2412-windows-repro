@@ -1,5 +1,6 @@
-1.运行helm.exe lint检查Chart和values.schema.json
-2.分别加载四个阶段values执行helm.exe template
-3.确认输出中不存在kind为Secret的对象
-4.核对Deployment的projected sources与轮换台账
-5.运行两个错误values并确认渲染失败
+1.读取Secret登记表、轮换计划和变更申请，核对阶段顺序与对象边界。
+2.调整values.schema.json和模板校验，约束activeKey与acceptedKeys的关系。
+3.按acceptedKeys生成projected volume引用，使用登记表中的Secret名称和键名。
+4.同步ConfigMap、容器环境变量和Pod注解中的阶段值。
+5.运行helm lint检查Chart，按phase_plan.csv逐阶段执行helm template。
+6.解析Helm清单，整理轮换台账、Secret引用核对表和变更说明。

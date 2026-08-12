@@ -1,0 +1,16 @@
+phase: steady
+rotationRevision: KEYRING-17-STEADY
+activeKey: g17
+acceptedKeys: [g17]
+secretRefs:
+  g17:
+    name: callback-keyring-g17
+    key: hmacKey
+  g18:
+    name: callback-keyring-g18
+    key: hmacKey
+image:
+  repository: registry.invalid/callback-verifier
+  tag: "3.4.0"
+service:
+  port: 8080

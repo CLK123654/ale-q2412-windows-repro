@@ -1,0 +1,4 @@
+phase: steady
+rotationRevision: KEYRING-17-STEADY
+activeKey: g17
+acceptedKeys: [g17]

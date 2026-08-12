@@ -1,5 +1,6 @@
-从key_inventory.csv建立key_id到Secret名称的映射
-按phase_plan.csv核对activeKey和acceptedKeys
-使用projected volume引用每阶段所需Secret
-在ConfigMap和Pod注解中写入阶段修订号
-渲染四个有效阶段并检查两个失败关闭样例
+核对Secret登记表、轮换计划、变更申请和当前Chart之间的对应关系。
+按阶段整理activeKey、acceptedKeys和rotationRevision，确认旧钥退场顺序。
+修改Chart，使Deployment只引用平台托管Secret并按acceptedKeys建立投影。
+同步ConfigMap、容器环境变量和Pod注解中的阶段配置。
+使用Helm生成阶段清单，整理轮换台账与Secret引用核对表。
+汇总发布影响和回滚材料，交给发布评审人与维护窗值班。

@@ -1,0 +1,4 @@
+phase: retire
+rotationRevision: KEYRING-18-RETIRE
+activeKey: g18
+acceptedKeys: [g18]

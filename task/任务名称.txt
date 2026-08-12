@@ -1,1 +1,1 @@
-回调验签服务Chart的外部Secret轮换
+回调验签Secret轮换

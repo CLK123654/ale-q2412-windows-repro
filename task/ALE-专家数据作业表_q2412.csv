@@ -1,4 +1,16 @@
-检查项：交付材料与执行入口
+﻿题目ID,任务名称,学科一级分类,学科二级分类,题目难度,任务概要,涉及的专业软件,包含的操作类型,任务prompt‼️,输入数据包（压缩包）‼️,reference（压缩包）‼️,关键标准答案‼️,关键动作,评分表（直接输入内容或使用txt文档）‼️,本项任务的环境依赖,相关专业软件的关键步骤,任务规格转化（excel或txt文档）,是否支持Windows
+,回调验签Secret轮换,"Computing, Data & Mathematical Sciences 计算、数据与数学科学",基础设施工程与云运维,高,回调验签服务将在维护窗切换HMACSecret。Chart需要先同时挂载新旧两代Secret，再启用新钥并安排旧钥退场。发布评审人通过阶段清单和引用台账核对变更，Secret正文仍由平台密钥组保管。,Helm,领域专业软件操作、文件和数据处理、脚本/命令/程序化处理、结果验证,"周四晚间要轮换回调验签服务使用的HMACSecret。现有Chart只挂载activeKey，若直接切到新钥，仍在途的旧签名会失去验证窗口。平台密钥组已经创建两代Secret，本次发布不处理密钥正文。
+
+secret_registry.csv登记Secret名称和键名，phase_plan.csv给出轮换顺序，rotation_contract.json记录对象与安全边界。change_request.md说明维护窗口和回滚材料，starter目录保存当前Chart。
+
+调整Chart，让Deployment按acceptedKeys顺序投影Secret，ConfigMap和容器配置使用同一组active与accepted值。rotationRevision进入ConfigMap和Pod注解。Chart不能创建Secret对象，activeKey缺席或引用未登记Secret时应停止生成清单。
+
+用Helm整理各阶段清单，记录每个阶段引用的Secret、挂载路径和对象身份。把完整Chart、阶段清单、轮换台账、Secret引用核对表和变更说明交给发布评审人，维护窗值班据此安排上线与回滚。",输入数据包.zip,reference.zip,关键标准答案.xlsx,"核对Secret登记表、轮换计划、变更申请和当前Chart之间的对应关系。
+按阶段整理activeKey、acceptedKeys和rotationRevision，确认旧钥退场顺序。
+修改Chart，使Deployment只引用平台托管Secret并按acceptedKeys建立投影。
+同步ConfigMap、容器环境变量和Pod注解中的阶段配置。
+使用Helm生成阶段清单，整理轮换台账与Secret引用核对表。
+汇总发布影响和回滚材料，交给发布评审人与维护窗值班。","检查项：交付材料与执行入口
 优先级：Gate项
 所属层级：L1任务指令遵循层
 标准答案：output包含chart、rendered、reports、change_note.md和README.md，chart是完整HelmChart，rendered与reports由输入材料重新生成。
@@ -84,4 +96,15 @@
 失败边界：报告不能从清单复算、跨文件引用断链、把候选清单写成已上线状态或遗漏回滚阶段。
 可观察证据：全部阶段清单、两张报告、change_request.md和change_note.md。
 客观硬性标准：两张报告与清单逐字段相等，变更说明的窗口、回滚和职责与申请一致。
-阈值：跨产物差异数和必需事实缺失数均为0。
+阈值：跨产物差异数和必需事实缺失数均为0。","支持的操作系统为Windows11，使用原生PowerShell运行helm.exe。
+
+主软件为Helm3.18.4，用于检查Chart并生成阶段清单。辅助工具为Python3.12和PyYAML6.0.2，用于读取CSV、解析YAML并整理台账。Helm按ApacheLicense2.0使用，PyYAML按MIT许可使用。
+
+安装指定版本工具时可以联网，开始处理材料后不访问KubernetesAPI、OCI仓库、外部密钥服务或其他网络服务。工作只需要读取输入目录并写入本地输出目录，不需要集群账号或云权限。
+
+输入材料是脱敏的发布登记，只包含Secret名称、键名和状态，不含密钥正文、访问令牌或个人信息。主要风险是过早移除旧钥、把未登记Secret带入清单，或让Chart越过平台密钥组的职责创建Secret。","1.读取Secret登记表、轮换计划和变更申请，核对阶段顺序与对象边界。
+2.调整values.schema.json和模板校验，约束activeKey与acceptedKeys的关系。
+3.按acceptedKeys生成projected volume引用，使用登记表中的Secret名称和键名。
+4.同步ConfigMap、容器环境变量和Pod注解中的阶段值。
+5.运行helm lint检查Chart，按phase_plan.csv逐阶段执行helm template。
+6.解析Helm清单，整理轮换台账、Secret引用核对表和变更说明。",任务规格转化.xlsx,是

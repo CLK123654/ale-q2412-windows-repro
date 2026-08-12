@@ -1,0 +1,4 @@
+phase: activate
+rotationRevision: KEYRING-18-ACTIVATE
+activeKey: g18
+acceptedKeys: [g17, g18]

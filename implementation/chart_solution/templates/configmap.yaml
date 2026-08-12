@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "callback-keyring.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  phase: {{ .Values.phase | quote }}
+  rotationRevision: {{ .Values.rotationRevision | quote }}
+  activeKey: {{ .Values.activeKey | quote }}
+  acceptedKeys: {{ join "," .Values.acceptedKeys | quote }}
