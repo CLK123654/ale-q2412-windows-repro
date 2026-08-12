@@ -1,5 +1,5 @@
-﻿题目ID,任务名称,学科一级分类,学科二级分类,题目难度,任务概要,涉及的专业软件,包含的操作类型,任务prompt‼️,输入数据包（压缩包）‼️,reference（压缩包）‼️,关键标准答案‼️,关键动作,评分表（直接输入内容或使用txt文档）‼️,本项任务的环境依赖,相关专业软件的关键步骤,任务规格转化（excel或txt文档）,是否支持Windows
-,回调验签Secret轮换,"Computing, Data & Mathematical Sciences 计算、数据与数学科学",基础设施工程与云运维,高,回调验签服务将在维护窗切换HMACSecret。Chart需要先同时挂载新旧两代Secret，再启用新钥并安排旧钥退场。发布评审人通过阶段清单和引用台账核对变更，Secret正文仍由平台密钥组保管。,Helm,领域专业软件操作、文件和数据处理、脚本/命令/程序化处理、结果验证,"周四晚间要轮换回调验签服务使用的HMACSecret。现有Chart只挂载activeKey，若直接切到新钥，仍在途的旧签名会失去验证窗口。平台密钥组已经创建两代Secret，本次发布不处理密钥正文。
+﻿题目ID,学科一级分类,学科二级分类,题目难度,任务概要,涉及的专业软件,包含的操作类型,任务prompt‼️,输入数据包（压缩包）‼️,reference（压缩包）‼️,关键标准答案‼️,关键动作,评分表（直接输入内容或使用txt文档）‼️,本项任务的环境依赖,相关专业软件的关键步骤,任务规格转化（excel或txt文档）,初标是否已完成,生产专家,完成日期
+,"Computing, Data & Mathematical Sciences 计算、数据与数学科学",基础设施工程与云运维,高,回调验签服务将在维护窗切换HMACSecret。Chart需要先同时挂载新旧两代Secret，再启用新钥并安排旧钥退场。发布评审人通过阶段清单和引用台账核对变更，Secret正文仍由平台密钥组保管。,Helm,领域专业软件操作、文件和数据处理、脚本/命令/程序化处理、结果验证,"周四晚间要轮换回调验签服务使用的HMACSecret。现有Chart只挂载activeKey，若直接切到新钥，仍在途的旧签名会失去验证窗口。平台密钥组已经创建两代Secret，本次发布不处理密钥正文。
 
 secret_registry.csv登记Secret名称和键名，phase_plan.csv给出轮换顺序，rotation_contract.json记录对象与安全边界。change_request.md说明维护窗口和回滚材料，starter目录保存当前Chart。
 
@@ -107,4 +107,4 @@ secret_registry.csv登记Secret名称和键名，phase_plan.csv给出轮换顺�
 3.按acceptedKeys生成projected volume引用，使用登记表中的Secret名称和键名。
 4.同步ConfigMap、容器环境变量和Pod注解中的阶段值。
 5.运行helm lint检查Chart，按phase_plan.csv逐阶段执行helm template。
-6.解析Helm清单，整理轮换台账、Secret引用核对表和变更说明。",任务规格转化.xlsx,是
+6.解析Helm清单，整理轮换台账、Secret引用核对表和变更说明。",任务规格转化.xlsx,是,用户883679,2026-08-12
